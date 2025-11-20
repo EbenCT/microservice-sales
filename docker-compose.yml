@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sales-service-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: sales_db
+      POSTGRES_USER: sales_user
+      POSTGRES_PASSWORD: sales_pass
+
+  sales-service:
+    build:
+      context: .
+      target: runtime
+    image: soegrupogg/sales-service:1.0
+    container_name: sales-service-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_NAME=sales_db
+      - DB_USER=sales_user
+      - DB_PASS=sales_pass
+      - PORT=3000
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
