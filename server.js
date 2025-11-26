@@ -1,4 +1,18 @@
+const express = require('express');
+require('dotenv').config();
+const cors = require('cors');
 const fetch = require('node-fetch');
+
+const salesRoutes = require('./routes/salesRoutes');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Habilitar CORS para todos los orígenes (puedes personalizarlo)
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Ruta demo para mostrar comunicación con el microservicio de usuarios
 app.get('/api/sales/users-demo', async (req, res) => {
   try {
@@ -9,22 +23,6 @@ app.get('/api/sales/users-demo', async (req, res) => {
     res.status(500).json({ error: 'No se pudo comunicar con el microservicio de usuarios', details: err.message });
   }
 });
-
-const express = require('express');
-require('dotenv').config();
-const cors = require('cors');
-
-
-const salesRoutes = require('./routes/salesRoutes');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-
-// Habilitar CORS para todos los orígenes (puedes personalizarlo)
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/sales', salesRoutes);
 
